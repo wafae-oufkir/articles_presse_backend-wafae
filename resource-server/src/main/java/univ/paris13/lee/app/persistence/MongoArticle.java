@@ -2,9 +2,14 @@ package univ.paris13.lee.app.persistence;
 
 import io.swagger.model.Article;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "article")
+@CompoundIndexes({
+        @CompoundIndex(name = "author_title", def = "{'author': 1, 'title': 1}", unique = true)
+})
 public class MongoArticle {
     @Id
     private String id = null;
