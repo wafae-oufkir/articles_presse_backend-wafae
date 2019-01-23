@@ -40,4 +40,12 @@ public class ArticleController implements ArticlesApi {
         List<Article> articles = repository.findAll().stream().map(MongoArticle::toArticle).collect(Collectors.toList());
         return ResponseEntity.ok(articles);
     }
+
+    @Override
+    public ResponseEntity<Article> deleteArticle(String articleId) {
+        final MongoArticle article = repository.findById(articleId).
+                orElseThrow(() -> new NotFoundException(String.format("Cannot find article with id '%s'", articleId)));
+        repository.deleteById(articleId);
+        return ResponseEntity.ok(article.toArticle());
+    }
 }

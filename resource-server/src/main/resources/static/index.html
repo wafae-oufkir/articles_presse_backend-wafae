@@ -19,11 +19,13 @@
                 <th>author</th>
                 <th>title</th>
                 <th>content</th>
+                <th></th>
             </tr>
             <tr ng-repeat="x in articles">
                 <td>{{ x.author }}</td>
                 <td>{{ x.title }}</td>
                 <td>{{ x.content }}</td>
+                <td><button ng-click="delete(x.id)">supprimer</button></td>
             </tr>
         </table>
     </div>
@@ -52,6 +54,15 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.create = function() {
         var article = { author:$scope.author, title:$scope.title, content:$scope.articleContent };
         $http.post(serviceUrl, article)
+            .then(function successCallback(response) {
+                $scope.getArticles();
+            },  function errorCallback(response) {
+                console.log(response);
+        });
+    };
+
+    $scope.delete = function(id) {
+        $http.delete(serviceUrl + "/" + id)
             .then(function successCallback(response) {
                 $scope.getArticles();
             },  function errorCallback(response) {
