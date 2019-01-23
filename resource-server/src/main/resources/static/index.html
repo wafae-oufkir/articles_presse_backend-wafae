@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+
+
+<div ng-app="myApp" ng-controller="myCtrl">
+
+    <div>
+        <h1>Articles de presse</h1>
+        <table>
+            <tr>
+                <th>author</th>
+                <th>title</th>
+                <th>content</th>
+            </tr>
+            <tr ng-repeat="x in articles">
+                <td>{{ x.author }}</td>
+                <td>{{ x.title }}</td>
+                <td>{{ x.content }}</td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <form novalidate>
+            <p>Author: <input ng-model="author">
+            <p>Title: <input ng-model="title">
+            <p>Content: <input ng-model="articleContent">
+            <br><br>
+            <button ng-click="create()">creer</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+    var serviceUrl = "https://localhost:8443/articles";
+
+    $scope.getArticles = function() {
+        $http.get(serviceUrl)
+            .then(function (response) {$scope.articles = response.data;});
+    };
+
+    $scope.create = function() {
+        var article = { author:$scope.author, title:$scope.title, content:$scope.articleContent };
+        $http.post(serviceUrl, article)
+            .then(function successCallback(response) {
+                $scope.getArticles();
+            },  function errorCallback(response) {
+                console.log(response);
+        });
+    };
+
+    $scope.getArticles();
+});
+</script>
+
+</body>
+</html>

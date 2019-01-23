@@ -1,0 +1,11 @@
+server:
+  port: 8888
+  ssl:
+    key-store: classpath:sample.jks
+    key-store-password: secret
+    key-password: password
+logging:
+  level:
+    org:
+      springframework:
+        web: TRACE

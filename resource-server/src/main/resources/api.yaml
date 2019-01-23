@@ -1,0 +1,120 @@
+swagger: "2.0"
+info:
+  description: "LEE project"
+  version: "1.0.0"
+  title: "Press articles"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "wafae.oufkir@edu.univ-paris13.fr"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost"
+basePath: "/v1"
+tags:
+- name: "article"
+  description: "Everything about your articles"
+- name: "user"
+  description: "Operations about user"
+schemes:
+- "https"
+paths:
+  /articles:
+    get:
+      tags:
+        - "article"
+      operationId: "getArticles"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Article"
+      security:
+        - article_auth:
+            - "write:article"
+            - "read:article"
+            - "admin"
+    post:
+      summary: Create an article
+      description: Creates a new article.
+      tags:
+        - "article"
+      operationId: "createArticle"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "article"
+          description: "Article to create"
+          required: true
+          schema:
+            $ref: "#/definitions/Article"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Article"
+          headers:
+            Location:
+              type: "string"
+  /articles/{articleId}:
+    get:
+      tags:
+        - "article"
+      operationId: "getArticle"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "articleId"
+          description: "ID of the Article to get"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Article"
+securityDefinitions:
+  article_auth:
+    type: "oauth2"
+    authorizationUrl: "https://localhost:8443/oauth/authorize"
+    flow: "accessCode"
+    scopes:
+      write:article: "modify articles in your account"
+      read:article: "read your article"
+      admin: "perform admin task"
+definitions:
+  Article:
+    type: "object"
+    required:
+      - "author"
+      - "title"
+      - "content"
+    properties:
+      id:
+        type: "string"
+      author:
+        type: "string"
+        example: "kate"
+      title:
+        type: "string"
+        example: "This is a title"
+      content:
+        type: "string"
+        example: "blablabla..."
+  User:
+    type: "object"
+    required:
+      - "username"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      username:
+        type: "string"
+        example: "kate"
