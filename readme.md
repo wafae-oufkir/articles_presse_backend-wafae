@@ -6,6 +6,7 @@ Le but de se projet est de mettre en avant les technologies suivantes:
 * Oauth2: gerer la securite des appels REST
 * Spring-boot: implementer un service REST
 * Spring-data: faire le mapping entre Java et la BD
+* Mongodb: stocker les donnees
 
 
 ## Code source
@@ -21,6 +22,7 @@ Les outils suivants sont necessaires pour demarrer l'application:
 ## Technologies
 ### Swagger
 https://swagger.io/
+
 Swagger est un outil pour decrire une API.
 Parmis les fonctionnalites qu'offrent Swagger, ce projet utilise la generation de code via un plugin maven.
 L'API de notre service REST est decrite dans le fichier resource-server/src/main/resources/api.yaml.
@@ -29,17 +31,25 @@ resource-server/target/generated-sources/swagger/src/gen/java/main/io/swagger.
 
 ### Spring-boot
 http://spring.io/projects/spring-boot
+
 Spring-boot est un framework Java permettant de creer un service REST avec quelques annotations.
 
 
 ### Spring-data
 https://spring.io/projects/spring-data
+
 Spring-data est un framework Java permettant d'acceder a de nombreuses base de donnees.
 Ce projet utilise spring-data pour acceder a une base mongodb.
 
 ### Oauth2
 https://tools.ietf.org/html/rfc6749
+
 Oauth2 est un protocole utilise pour obtenir un token afin de securiser des requetes HTTP.
+
+### Mongodb
+https://docs.mongodb.com/manual/tutorial/
+
+MongoDB est une base de donnees tres utilisee dans les systemes distribues car elle est designee pour etre repliquee et tres performante pour des lectures concurrentes.
 
 
 ## Installation
@@ -74,12 +84,18 @@ Ouvrir un navigateur web et aller a la page https://localhost:8443/login.
 Le resource server utilise HTTPS avec un certificat self-signed, le navigateur web demande donc confirmation avant
 d'acceder a la page.
 Ajouter une exception dans le navigateur web afin d'acceder au site web.
+
+
 Le navigateur web est alors redirige vers l'authorization server
 https://localhost:8888/oauth/authorize?response_type=code&client_id=lee&redirect_uri=https://localhost:8443/code.
 L'authorization server utilise lui aussi HTTPS, il faut donc a nouveau ajouter une exception dans le navigateur web.
+
+
 Le navigateur web accede a la page d'authentification sur l'authorization server.
 Le nom d'utilisateur est foo et le mot de passe est foo.
 Apres avoir saisit les identifiants, la page de consentement de l'authorization server s'affiche.
+
+
 Apres avoir consentit a l'acces au resource server, le navigateur est redirige vers celui-ci.
 La page comporte une table contenant les articles presents en BD et un formulaire ainsi qu'un bouton pour creer un
 nouvel article.
@@ -92,6 +108,11 @@ La securite du service REST (resource server) repose sur deux aspects:
 * la protection de ce token
 Le token est obtenu avec le flow Oauth2 Authorization Code en echange des identifiants fournit a l'authorization server.
 La protection de l'access-token repose sur l'utilisation de HTTPS.
+
+### Authorization server
+L'authorization server joue le meme role que par exemple Facebook pour beaucoup d'applications tiers.
+Il permet de se connecter a une application tier (ici Article de presse, i.e. le resource server) en s'authentifiant via l'authorization server.
+La delegation d'authentification est presente sur de tres nombreux sites web.
 
 ### Resource server
 Le resource server possede plusieurs controlleurs.
@@ -107,7 +128,8 @@ l'access-token stocke en session.
 
 * /articles: implemente le service REST.
 
-### Web page
+### Frontend
+La partie frontend est minimaliste, l'interet du projet reside dans le backend.
 La seule page HTML est /index.html. Celle-ci comporte une table et un formulaire gere par angularJS.
 La table listant les articles de presse presents dans la BD est alimentee par angularJS apres une requete au service
 REST.
